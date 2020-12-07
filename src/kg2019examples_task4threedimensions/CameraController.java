@@ -13,6 +13,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.SwingUtilities;
+
 import kg2019examples_task4threedimensions.math.Matrix4Factories;
 import kg2019examples_task4threedimensions.math.Vector3;
 import kg2019examples_task4threedimensions.math.Vector4;
@@ -21,19 +22,18 @@ import kg2019examples_task4threedimensions.screen.ScreenPoint;
 import kg2019examples_task4threedimensions.third.Camera;
 
 /**
- *
  * @author Alexey
  */
 public class CameraController implements MouseListener, MouseMotionListener, MouseWheelListener {
-    
+
     /*=============== Начало паттерна "слушатель" ==================*/
     /* Реализация паттерна слушатель для оповещения всех желающих о каком-либо событии */
-    
+
     /* Для начала требуется объявить интерфейс, в котором будут указаны используемы для оповещения методы.
      * В данном случае будет объявлен один метод, который будет вызываться тогда,
      * когда изменится состояние камеры и надо перерисовать экран
      */
-    
+
     /**
      * Интерфейс, объявляющий набор метод, которые обязан реализовать слушатель
      */
@@ -43,29 +43,31 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
          */
         void shouldRepaint();
     }
-    
-    
-    /* Далее описывается приватная коллекция, в данном случае - Set, 
+
+
+    /* Далее описывается приватная коллекция, в данном случае - Set,
      * где будет хрнаиться список всех слушателей, подписанных на данное событие.
      */
     private Set<RepaintListener> listeners = new HashSet<>();
-    
+
     /**
      * Метод добавления слушателя
+     *
      * @param listener слушатель
      */
     public void addRepaintListener(RepaintListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * Метод удаления слушателя
+     *
      * @param listener слушатель
      */
     public void removeRepaintListener(RepaintListener listener) {
         listeners.remove(listener);
     }
-    
+
     /**
      * Вспомогательный метод, который оповещает всех слушателей о произошедшем событии.
      */
@@ -73,9 +75,9 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
         for (RepaintListener cl : listeners)
             cl.shouldRepaint();
     }
-    
+
     /*=============== Конец паттерна "слушатель" ==================*/
-    
+
     private Camera camera;
     private ScreenConverter sc;
 
@@ -99,11 +101,24 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
     public void setSc(ScreenConverter sc) {
         this.sc = sc;
     }
-    
+
+    private boolean toRotate = false;
+
+    public boolean isToRotate() {
+        return toRotate;
+    }
+
+    private float angle;
+
+    public float getAngle() {
+        return angle;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            toRotate = !toRotate;
+        }
     }
 
     /*Здесь запоминаем последнее положение мыши, для которого обрабатывали событие*/
@@ -114,7 +129,7 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
     private boolean rightFlag = false;
     /*Флаг, фиксирующий, зажата ли сейчас средняя кнопка мыши*/
     private boolean middleFlag = false;
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
         /*Устанавливаем флаги кнопок мыши*/
@@ -136,7 +151,7 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
             rightFlag = false;
         if (SwingUtilities.isMiddleMouseButton(e))
             middleFlag = false;
-        
+
         /*Если оба сняты, то забываем точку*/
         if (!leftFlag && !rightFlag && !middleFlag)
             last = null;
@@ -144,17 +159,18 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         Point current = e.getPoint();
+
         if (last != null) {
             /*Вычисляем разницу в пикселях*/
             int dx = current.x - last.x;
@@ -163,23 +179,25 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
             if (leftFlag) {
                 double da = dx * Math.PI / 180;
                 double db = dy * Math.PI / 280;
+
                 camera.modifyRotate(
                         Matrix4Factories.rotationXYZ(da, Matrix4Factories.Axis.Y)
-                    .mul(
-                        Matrix4Factories.rotationXYZ(db, Matrix4Factories.Axis.X)
-                    )
+                                .mul(
+                                        Matrix4Factories.rotationXYZ(db, Matrix4Factories.Axis.X)
+                                )
                 );
+
             }
             /*Если двигаем с зажатой правой кнопкой мыши, то перемещаем камеру вдоль осей X и Y*/
             if (rightFlag) {
                 Vector4 zero = new Vector4(sc.s2r(new ScreenPoint(0, 0)), 0);
                 Vector4 cur = new Vector4(sc.s2r(new ScreenPoint(dx, dy)), 0);
-                
+
                 /*Вектор смещения в реальных координатах с точки зрения камеры*/
                 Vector3 delta = cur.add(zero.mul(-1)).asVector3();
                 camera.modifyTranslate(Matrix4Factories.translation(delta));
             }
-            /* Если двигаем с зажатой средней кнопкой мыши, то перемещаем камеру 
+            /* Если двигаем с зажатой средней кнопкой мыши, то перемещаем камеру
              * вдоль оси Z на расстояние равное изменению положения мыши в реальных координатах.
              * Направление выбирается положительное при движении вверх.
              */
@@ -200,7 +218,7 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        
+
     }
 
     @Override
@@ -209,7 +227,7 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
         /*Если зажат Control, то будем менять параметры перспективы, иначе - масштаба*/
         if (e.isControlDown()) {
             /*delta*5f - экспериментально подобранное число. Чем меньше, тем быстрее будет изменяться точка схода*/
-            camera.modifyProjection(Matrix4Factories.centralProjection(delta*5f, Matrix4Factories.Axis.Z));
+            camera.modifyProjection(Matrix4Factories.centralProjection(delta * 5f, Matrix4Factories.Axis.Z));
         } else {
             /*Вычислим коэффициент масштаба*/
             float factor = 1;
@@ -221,5 +239,5 @@ public class CameraController implements MouseListener, MouseMotionListener, Mou
         }
         onRepaint();
     }
-    
+
 }

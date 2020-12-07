@@ -14,6 +14,9 @@ import kg2019examples_task4threedimensions.math.Vector4;
  */
 public class Camera implements ICamera {
     private Matrix4 translate, rotate, scale, projection;
+    private boolean rotateModel = false;
+    private float angle;
+
 
     /**
      * Создаёт простую камеру
@@ -44,7 +47,33 @@ public class Camera implements ICamera {
             )
         ).asVector3();
     }
-    
+
+    @Override
+    public boolean ifRotateModel() {
+        return rotateModel;
+    }
+
+    @Override
+    public void setAngleModel(float angle) {
+        this.angle = angle;
+    }
+
+    @Override
+    public float getAngleModel() {
+        return 0;
+    }
+
+    @Override
+    public void setRotateModel(float angle) {
+        if (angle == 0){
+            this.rotateModel = false;
+        } else {
+            this.rotateModel = true;
+        }
+        this.angle = angle;
+
+    }
+
     public void modifyProjection(Matrix4 dp) {
         this.projection = dp.mul(this.projection);
     }

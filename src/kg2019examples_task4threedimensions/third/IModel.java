@@ -16,4 +16,6 @@ public interface IModel {
      * @return Списко полилиний модели.
      */
     List<PolyLine3D> getLines();
+
+    void rotate(float angle);
 }

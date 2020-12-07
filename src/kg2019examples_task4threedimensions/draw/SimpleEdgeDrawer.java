@@ -30,12 +30,12 @@ public class SimpleEdgeDrawer extends ScreenGraphicsDrawer {
      * @param polyline полилиния
      */
     @Override
-    protected void oneDraw(PolyLine3D polyline) {
+    protected void oneDraw(PolyLine3D polyline, Color c) {
         LinkedList<ScreenPoint> points = new LinkedList<>();
         /*переводим все точки в экранные*/
         for (Vector3 v : polyline.getPoints())
             points.add(getScreenConverter().r2s(v));
-        getGraphics().setColor(Color.BLACK);
+        getGraphics().setColor(polyline.getC());
         /*если точек меньше двух, то рисуем отдельными алгоритмами*/
         if (points.size() < 2) {
             if (points.size() > 0)

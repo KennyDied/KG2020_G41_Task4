@@ -18,4 +18,9 @@ public interface ICamera {
      * @return новая точка
      */
     public Vector3 w2s(Vector3 v);
+    boolean ifRotateModel();
+    void setAngleModel (float angle);
+    float getAngleModel();
+
+    void setRotateModel(float angle);
 }

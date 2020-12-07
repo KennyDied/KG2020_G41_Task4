@@ -51,7 +51,7 @@ public abstract class ScreenGraphicsDrawer implements IDrawer {
         PolyLine3D[] arr = lines.toArray(new PolyLine3D[0]);
         Arrays.sort(arr, getComparator());
         for (PolyLine3D pl : arr) {
-            oneDraw(pl);
+            oneDraw(pl, pl.getC());
         }
     }
     
@@ -68,7 +68,7 @@ public abstract class ScreenGraphicsDrawer implements IDrawer {
      * Метод, умеющий рсовать одну полилинию
      * @param polyline полилиния, которую требуется нарисовать
      */
-    protected abstract void oneDraw(PolyLine3D polyline);
+    protected abstract void oneDraw(PolyLine3D polyline, Color c);
     
     /**
      * Должен возвращать фильтр рисуемых полилиний.

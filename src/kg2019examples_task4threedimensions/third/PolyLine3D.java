@@ -4,6 +4,7 @@
  */
 package kg2019examples_task4threedimensions.third;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,15 +18,25 @@ import kg2019examples_task4threedimensions.math.Vector3;
 public class PolyLine3D {
     private List<Vector3> points;
     private boolean closed;
+    private Color c;
+
+    public Color getC() {
+        return c;
+    }
+
+    public void setC(Color c) {
+        this.c = c;
+    }
 
     /**
      * Создаёт новую полилинию на основе трёхмерных точек.
      * @param points список точек-вершин ломанной
      * @param closed признак замкнутостит линии
      */
-    public PolyLine3D(Collection<Vector3> points, boolean closed) {
+    public PolyLine3D(Collection<Vector3> points, boolean closed, Color c) {
         this.points = new LinkedList<Vector3>(points);
         this.closed = closed;
+        this.c = c;
     }
 
     /**

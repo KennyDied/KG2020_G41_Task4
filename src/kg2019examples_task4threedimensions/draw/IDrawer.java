@@ -4,6 +4,7 @@
  */
 package kg2019examples_task4threedimensions.draw;
 
+import java.awt.*;
 import java.util.Collection;
 import kg2019examples_task4threedimensions.third.PolyLine3D;
 
